@@ -38,7 +38,7 @@ querySegTree f (Node nl nr na lc rc) l r =
   if l <= nl && nr <= r then na
   else if r <= m then querySegTree f lc l r
   else if l >  m then querySegTree f rc l r
-	else
+  else
     let la = querySegTree f lc l r in
     let ra = querySegTree f rc l r in 
       f la ra
