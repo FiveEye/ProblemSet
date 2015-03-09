@@ -1,4 +1,4 @@
--- https://www.hackerrank.com/contests/lambda-calculi-9/challenges/lists-and-gcd
+-- https://www.hackerrank.com/challenges/lists-and-gcd
 f :: [Int] -> [(Int, Int)]
 f [] = []
 f (x:y:z) = (x,y):(f z)
