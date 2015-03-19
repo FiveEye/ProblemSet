@@ -1,4 +1,4 @@
--- https://www.hackerrank.com/challenges/range-minimum-query
+-- https://www.hackerrank.com/challenges/minimum-multiple
 
 import Text.Printf (printf)
 
@@ -44,12 +44,39 @@ querySegTree f (Node nl nr na lc rc) l r =
       f la ra
   where m = fst $ divMod (nl + nr) 2
 
-solve_seg :: SegTree Int -> [Int] -> Int
-solve_seg st [a, b] = querySegTree min st a b
+readInt :: String -> Int
+readInt = read
+ 
+transQuery :: [String] -> (Int, Int, Int)
+transQuery (a:b:c:[]) = (if a == "Q" then 1 else 0, read b, read c)
 
-solve :: Int -> Int -> [Int] -> [[Int]] -> [Int]
-solve n m s qs = let st = buildSegTree min 0 (n - 1) s in
-  map (solve_seg st) qs
+--gcd a b = if mod a b == 0 then b else gcd b (mod a b)
+
+--lcm a b = a * b / (gcd a b)
+
+
+ 
+solve0 :: (SegTree Integer) -> [(Int, Int, Int)] -> [Integer] 
+solve0 sgtree [] = []
+solve0 sgtree ((q,l,r):xs) = 
+  if q == 1 then 
+    (mod (querySegTree lcm sgtree l r) 1000000007):(solve0 sgtree xs)
+  else
+    let a = (querySegTree lcm sgtree l l) in  
+    let t = updateSegTree lcm sgtree l l ((toInteger r) * a) in solve0 t xs
+
+solve :: [String] -> [String]
+solve (n_str:l_str:m_str:qs_str) = map show (solve0 sgtree qs)
+  where n = read n_str
+        l = map read (words l_str)
+        qs = map transQuery $ map words qs_str
+        sgtree = buildSegTree lcm 0 (n - 1) l
+        
+        
+  
+  
 
 main :: IO()
-main = getContents >>= mapM_ (printf "%d\n"). (\([n, m]:s:qs) -> solve n m s qs). map (map read. words). lines
+main = do
+  contents <- getContents 
+  mapM_ putStrLn $ solve (lines contents)
