@@ -1,6 +1,7 @@
 //http://lx.lanqiao.org/problem.page?gpid=T30
-//Wrong code! But AC!
-//we should use a disjoint set instead of a queue
+
+//Because the last part use a disjoint set, it is near linear time.
+
 
 #include <stdio.h>
 #include <string.h>
@@ -9,25 +10,38 @@ int n, in[N], ind[N];
 int stk[N], top;
 int LH[N], RH[N];
 int LL[N], RL[N], MX[N];
-int q[2 * N], beg, end, np;
 
-void print_q() {
-  printf("qu ");
-  for(int i = beg; i < end; ++i) printf("%d ", q[i]); puts("");
+int print_arr(int s[], int n) {
+  for(int i = 0; i < n; ++i) printf("%d ", s[i]); puts("");
 }
 
-void push_front(int x) {
-  q[--beg] = x;
+int getfat(int bc[], int x) {
+  if(bc[x] == -1) return x;
+  return bc[x] = getfat(bc, bc[x]);
+}
+
+void uni(int bc[], int x, int y) {
+  x = getfat(bc, x);
+  y = getfat(bc, y);
+  if(x == y) return;
+  bc[x] = y;
+}
+
+void push(int x) {
+  LL[x] = top;
+  stk[top++] = x;
 }
 
 int count(int x) {
-  if(np == -1) np = beg;
-  while(np < end && q[np] <= x) ++np;
-  return np - beg;
+  int y = getfat(RL, x + 1);
+  return top - LL[y] - 1;
 }
 
 void clear(int x) {
-  while(beg < end && q[beg] <= x) ++beg;
+  while(top > 0 && stk[top - 1] <= x) {
+    uni(RL, stk[top - 1], stk[top - 2]);
+    --top;
+  }
 }
 
 int main() {
@@ -82,25 +96,24 @@ int main() {
       }
       MX[i] = j - 1;
     }
+    
     //for(int i = 1; i <= n; ++i) printf("%d %d\n", i, MX[i]);
-  
-    beg = end = n;
-    np = -1;
-  
+    
+    memset(RL, -1, sizeof(RL[0]) * (n + 10));
+    
+    top = 0;
+    
     int ans = 1;
-    push_front(n);
-  
+    push(n + 1);
+    push(n);
+    
     for(int i = n - 1; i >= 1; --i) {
       int tmp = (ind[i + 1] < ind[i] ? LH[i] : RH[i]) - 1;
       clear(tmp);
-      push_front(i);
-      //printf("%d %d %d %d\n", i, MX[i], ans, tmp);
-      //print_q();
-      if(MX[i] == i) {
-        ans += 1;
-      } else {
-        ans += count(MX[i]);
-      }
+      push(i);
+      //print_arr(stk, top);
+      //printf("i %d %d %d %d\n", i, tmp, count(MX[i]), ans);
+      ans += count(MX[i]);
     }
     printf("%d\n", ans);
   }
