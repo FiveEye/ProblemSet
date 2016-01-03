@@ -6,4 +6,4 @@
 
 [LeetCode](https://leetcode.com/)
 
-#Waiting List
+#To-Do List
