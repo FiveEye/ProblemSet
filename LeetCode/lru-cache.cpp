@@ -1,63 +1,55 @@
 #include <functional>
 #include <queue>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <utility>
 
 using namespace std;
 
 #define MP(a,b) make_pair(a,b)
-
 typedef pair<int, int> PII;
-
 class LRUCache{
 private:
-  priority_queue< PII, vector<PII>, std::greater<PII> > pq;
-  map<int, int> tm;
-  map<int, int> kv;
+  queue<PII> pq;
+  unordered_map<int, PII> kv;
   int now;
   int cap = 0;
 public:
   LRUCache(int capacity) {
     while(!pq.empty()) pq.pop();
-    tm.clear();
     kv.clear();
     now = 0;
     cap = capacity;
   }
     
   int get(int key) {
-    auto ret = kv.find(key);   
+    auto ret = kv.find(key);
     if(ret != kv.end()) {
-      ++now;
-      tm[key] = now;
+      ret->second.second = ++now;
       pq.push(MP(now, key));
-      return ret->second;
+      return ret->second.first;
     }
     return -1;
   }
 
   void set(int key, int value) {
+    auto top = pq.front();
     while(!pq.empty()) {
-      auto top = pq.top();
-      auto t = tm.find(top.second);
-      if(top.first == t->second) break;
+      top = pq.front();
+      auto t = kv.find(top.second);
+      if(top.first == t->second.second) break;
       pq.pop();
     }
     
-    auto t = tm.find(key);
-    if(t == tm.end() && cap <= 0) {
-      auto top = pq.top();
-      tm.erase(top.second);
+    auto t = kv.find(key);
+    if(t == kv.end() && cap <= 0) {
       kv.erase(top.second);
       pq.pop();
     }
-    if(t == tm.end()) --cap;
+    if(t == kv.end()) --cap;
     ++now;
-    kv[key] = value;
-    tm[key] = now;
+    kv[key] = MP(value, now);
     pq.push(MP(now, key));
 
   }
 };
-
