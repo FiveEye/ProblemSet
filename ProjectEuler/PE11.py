@@ -19,7 +19,7 @@ def f(x, y, dx, dy):
     if ret > ans: ans = ret
 
 
-for i in range(20):
+for i in range(20):
     for j in range(20):
         for l in range(len(dir)):
             f(i, j, dir[l][0], dir[l][1])
