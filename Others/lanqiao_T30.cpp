@@ -119,7 +119,7 @@ int main() {
     
     //for(int i = 1; i <= n; ++i) printf("%d %d %d %d %d\n", i, LL[i], RL[i], LH[i], RH[i]);
 
-    for(int i = N - 1; i >= 1; --i) {
+    for(int i = n - 1; i >= 1; --i) {
       int j = i + 1;
       while(LL[i] <= ind[j] && ind[j] <= RL[i]) {
         j = MX[j] + 1;
