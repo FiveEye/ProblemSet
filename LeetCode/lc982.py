@@ -18,17 +18,22 @@ class Solution:
         #            dp[j&A[i]][k+1] += dp[j][k]
         #    dp[A[i]][1] += 1
         #print(dp[0][1], dp[0][2], dp[0][3])
-        t = 1
+        mm = 1
         for i in range(n):
-            for j in range(t):
-                if dp[j][2] == 0:
-                    continue
-                dp[j&A[i]][3] += dp[j][2]
+            j = 0
+            while j < mm:
+                t = j & A[i]
+                if t == 0:
+                    if dp[j][2] != 0:
+                        dp[j&A[i]][3] += dp[j][2]
+                    j += 1
+                else:
+                    j += (t&(-t))
             for j in range(0, i):
                 dp[A[i]&A[j]][2] += 1
             dp[A[i]][1] += 1
-            if A[i] >= t:
-                t = A[i] + 1
+            if A[i] >= mm:
+                mm = A[i] + 1
         #print(dp)
         #print(dp[0][1], dp[0][2], dp[0][3])
         return dp[0][1] + dp[0][2] * 6 + dp[0][3] * 6
