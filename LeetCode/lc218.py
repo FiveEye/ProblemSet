@@ -12,13 +12,13 @@ def uni(bc, x, y):
 class Solution:
     def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
         buildings = sorted(buildings, key=lambda x: x[2], reverse=True)
-        N = 20020
         xs = set()
         for x, y, c in buildings:
             xs.add(x)
             xs.add(y)
-        print(xs)
+        #print(xs)
         xs = sorted(list(xs))
+        N = len(xs) + 1
         dm = {}
         for i, x in enumerate(xs):
             dm[x] = i
